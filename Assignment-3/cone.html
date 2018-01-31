@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  
+    <script src="../Common/webgl-utils.js"></script>
+  <script src="../Common/initShaders.js"></script>
+  <script src="../Common/Cone.js"></script>
+  <script src="cone.js"></script>
     <!-- Fragment shader program -->
     <script id="Cone-vertex-shader" type="x-shader/x-vertex">
 		attribute vec4 vPosition;
@@ -15,13 +18,9 @@
     <script id="Cone-fragment-shader" type="x-shader/x-fragment">
 		void main()
 		{
-			gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+			gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 		}
     </script>
-  <script src="../Common/webgl-utils.js"></script>
-  <script src="../Common/initShaders.js"></script>
-  <script src="../Common/Cone.js"></script>
-  <script src="cone.js"></script>
 
 </head>
 <body>
