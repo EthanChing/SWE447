@@ -35,8 +35,8 @@ var V;  // matrix storing the viewing transformation
 
 // Projection transformation parameters
 var P;  // matrix storing the projection transformation
-var near = 10;      // near clipping plane's distance
-var far = 120;      // far clipping plane's distance
+var near = 1;      // near clipping plane's distance
+var far = 600;      // far clipping plane's distance
 
 // Animation variables
 var time = 0.0;      // time, our global time constant, which is 
