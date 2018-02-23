@@ -18,16 +18,15 @@ var gl;
 
 var Planets = {
   Sun : undefined,
-  // Mercury : undefined,
-  // Venus : undefined,
-  // Earth : undefined,
-  // Moon : undefined,
-  // Mars : undefined,
-  // Jupiter : undefined,
-  // Saturn : undefined,
-  // Uranus : undefined,
-  // Neptune : undefined,
-  // Pluto : undefined
+  Mercury : undefined,
+  Venus : undefined,
+  Earth : undefined,
+  Moon : undefined,
+  Mars : undefined,
+  Jupiter : undefined,
+  Saturn : undefined,
+  Uranus : undefined,
+  Neptune : undefined
 };
 
 // Viewing transformation parameters
@@ -37,11 +36,6 @@ var V;  // matrix storing the viewing transformation
 var P;  // matrix storing the projection transformation
 var near = 10;      // near clipping plane's distance
 var far = 120;      // far clipping plane's distance
-
-// Animation variables
-var time = 0.0;      // time, our global time constant, which is 
-                     // incremented every frame
-var timeDelta = 0.5; // the amount that time is updated each fraime
 
 //---------------------------------------------------------------------------
 //
@@ -94,7 +88,6 @@ function init() {
 //
 
 function render() {
-  time += timeDelta;
 
   var ms = new MatrixStack();
 
@@ -106,48 +99,135 @@ function render() {
   V = translate(0.0, 0.0, -0.5*(near + far));
   ms.load(V);  
 
-  // Create a few temporary variables to make it simpler to work with
-  // the various properties we'll use to render the planets.  The Planets
-  // dictionary (created in init()) can be indexed by each planet's name.
-  // We'll use the temporary variables "planet" to reference the geometric
-  // information (e.g., sphere model) we created in the Planets array.
-  // Likewise, we'll use "data" to reference the database of information
-  // about the planets in SolarSystem.  Look at how these are
-  // used; it'll simplify the work you need to do.
-
-  var name, planet, data;
-
-  name = "Sun";
-  planet = Planets[name];
-  data = SolarSystem[name];
-  
-  // Set PointMode to true to render all the vertices as points, as
-  // compared to filled triangles.  This can be useful if you think
-  // your planet might be inside another planet or the Sun.  Since the
-  // "planet" variable is set for each object, you will need to set this
-  // for each planet separately.
-
-  planet.PointMode = false;
-
-  // Use the matrix stack to configure and render a planet.  How you rener
-  // each planet will be similar, but not exactly the same.  In particular,
-  // here, we're only rendering the Sun, which is the center of the Solar
-  // system (and hence, has no translation to its location).
-
-  ms.push();
-  ms.scale(data.radius);
-  gl.useProgram(planet.program);
-  gl.uniformMatrix4fv(planet.uniforms.MV, false, flatten(ms.current()));
-  gl.uniformMatrix4fv(planet.uniforms.P, false, flatten(P));
-  gl.uniform4fv(planet.uniforms.color, flatten(data.color));
-  planet.render();
-  ms.pop();
+  // Render the objects in the solar system
+  renderSolarObject( "Sun" , ms );
+  renderSolarObject( "Mercury", ms );
+  renderSolarObject( "Venus", ms );
+  renderSolarObject( "Earth", ms );
+  renderSolarObject( "Moon", ms );
+  renderSolarObject( "Mars", ms );
+  renderSolarObject( "Jupiter", ms );
+  renderSolarObject( "Saturn", ms );
+  renderSolarObject( "Uranus", ms );
+  renderSolarObject( "Neptune", ms );
 
   //
   //  Add your code for more planets here!
   //
 
   window.requestAnimationFrame(render);
+}
+
+function renderSolarObject( name, ms ) {
+	var  planet, data;
+	
+	// to scale 1ms = 1 earth year to the animation speed
+	var time = (new Date()).getTime() * 0.0002;
+	
+	// Create a few temporary variables to make it simpler to work with
+	// the various properties we'll use to render the planets.  The Planets
+	// dictionary (created in init()) can be indexed by each planet's name.
+	// We'll use the temporary variables "planet" to reference the geometric
+	// information (e.g., sphere model) we created in the Planets array.
+	// Likewise, we'll use "data" to reference the database of information
+	// about the planets in SolarSystem.  Look at how these are
+	// used; it'll simplify the work you need to do.
+	
+	planet = Planets[name];
+	data = SolarSystem[name];
+
+	// Set PointMode to true to render all the vertices as points, as
+	// compared to filled triangles.  This can be useful if you think
+	// your planet might be inside another planet or the Sun.  Since the
+	// "planet" variable is set for each object, you will need to set this
+	// for each planet separately.
+
+	planet.PointMode = false;
+
+	// Use the matrix stack to configure and render a planet.  How you rener
+	// each planet will be similar, but not exactly the same.  In particular,
+	// here, we're only rendering the Sun, which is the center of the Solar
+	// system (and hence, has no translation to its location).
+
+	
+	switch (name) {
+		
+		case 'Moon':
+		
+			ms.push();
+			ms.rotate((360/data.year) * time, [0, 0, 1]);
+			ms.push();
+			ms.translate(data.distance, 0, 0);
+			
+			break;
+		
+		case 'Sun':
+		
+			//then transform around the earth
+			ms.push();
+			ms.rotate((360/SolarSystem['Earth'].year) * time, [0, 0, 1]);
+			ms.push();
+			ms.translate(SolarSystem['Earth'].distance, 0, 0);
+			break;
+			
+		case 'Mercury':
+		case 'Venus':
+		case 'Mars':
+		case 'Jupiter':
+		case 'Saturn':
+		case 'Uranus':
+		case 'Neptune':
+		
+			//then transform around the earth
+			ms.push();
+			ms.rotate((360/SolarSystem['Earth'].year) * time, [0, 0, 1]);
+			ms.push();
+			ms.translate(SolarSystem['Earth'].distance, 0, 0);
+		
+			ms.push();
+			ms.rotate((360/data.year)* time, [0, 0, 1]);
+			ms.push();
+			ms.translate(data.distance, 0, 0);
+			break;
+			
+		default:
+	}
+	
+	ms.push();
+	ms.scale(data.radius);
+	gl.useProgram(planet.program);
+	gl.uniformMatrix4fv(planet.uniforms.MV, false, flatten(ms.current()));
+	gl.uniformMatrix4fv(planet.uniforms.P, false, flatten(P));
+	gl.uniform4fv(planet.uniforms.color, flatten(data.color));
+	planet.render();
+	ms.pop();
+	
+	switch (name) {
+		case 'Moon':
+			ms.pop();
+			ms.pop();
+			break;
+		
+		case 'Sun':
+			ms.pop();
+			ms.pop();
+			break;
+			
+		case 'Mercury':
+		case 'Venus':
+		case 'Mars':
+		case 'Jupiter':
+		case 'Saturn':
+		case 'Uranus':
+		case 'Neptune':
+			ms.pop();
+			ms.pop();
+			ms.pop();
+			ms.pop();
+			break;
+		
+		default:
+	}
 }
 
 //---------------------------------------------------------------------------
