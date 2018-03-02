@@ -82,6 +82,7 @@ function render() {
 
   ms.push();
   ms.scale(data.radius);
+  ms.translate(0,0,-1);
   gl.useProgram(wheel.program);
   gl.uniformMatrix4fv(wheel.uniforms.MV, false, flatten(ms.current()));
   gl.uniformMatrix4fv(wheel.uniforms.P, false, flatten(P));
