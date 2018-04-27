@@ -69,7 +69,7 @@ window.onStartClick = function() {
   
   audio = soundManager.createSound({
     id: 'music', // optional: provide your own unique id
-    url: 'mp3/lwtua.mp3',
+    url: 'mp3/10 Light Up The Night.mp3',
     onload: init.bind(this),
     whileloading: function(e) {
       var perc = Math.round((this.bytesLoaded / this.bytesTotal) * 100);
