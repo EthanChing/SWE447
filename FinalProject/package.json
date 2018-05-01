@@ -8,7 +8,6 @@
     "start": "budo demo.js:bundle.js -v --live | garnish",
     "build": "browserify demo.js | uglifyjs -cm > bundle.js"
   },
-  "author": "silvio paganini | @silviopaganini",
   "license": "ISC",
   "devDependencies": {
     "browserify": "^14.4.0",
