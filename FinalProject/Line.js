@@ -43,7 +43,7 @@ Line.prototype.generatedPoints = function(array) {
 
     var straightLines = perlin.generatePerlinNoise(1, 128);
     for (i = straightLines.length - 1; i >= 0; i--) {
-        straightLines[i] *= 10;
+        straightLines[i] *= 6;
     };
 
     // console.log(array)
