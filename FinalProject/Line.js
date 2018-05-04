@@ -50,10 +50,10 @@ Line.prototype.generatedPoints = function(array) {
 
     // var noise = perlin.generatePerlinNoise(1, 128);
     var noise = [];
-    var order = this.index < 11 ? 10 - this.index : this.index
+    var order = this.index < 6 ? 10 - this.index : this.index
 
     var range = 512 / 8
-    var start = range * (order % 11)
+    var start = range * (order % 6)
 
     for (i = range + start; i >= start; i--) {
         var a = array[i] / 5;
